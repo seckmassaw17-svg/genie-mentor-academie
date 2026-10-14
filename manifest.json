@@ -1,0 +1,121 @@
+{
+  "id": "/",
+  "name": "Génie Mentor Académie",
+  "short_name": "GMA",
+  "description": "Plateforme pédagogique d'excellence Génie Mentor Académie : soutien scolaire, cours de renforcement, répétiteurs à domicile et gestion académique offline-first.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "window-controls-overlay"
+  ],
+  "background_color": "#ffffff",
+  "theme_color": "#1e40af",
+  "orientation": "portrait-primary",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "productivity",
+    "books"
+  ],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mes Cours",
+      "short_name": "Cours",
+      "description": "Accéder aux cours et résumés pédagogiques",
+      "url": "/?tab=courses",
+      "icons": [
+        {
+          "src": "/logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Exercices & Corrigés",
+      "short_name": "Exercices",
+      "description": "S'entraîner avec les exercices corrigés",
+      "url": "/?tab=exercises",
+      "icons": [
+        {
+          "src": "/logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Évaluations & Tests",
+      "short_name": "Tests",
+      "description": "Tester son niveau avec les QCM et examens blancs",
+      "url": "/?tab=tests",
+      "icons": [
+        {
+          "src": "/logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Trouver un Répétiteur",
+      "short_name": "Répétiteurs",
+      "description": "Consulter les profils de répétiteurs qualifiés",
+      "url": "/?tab=repetiteurs",
+      "icons": [
+        {
+          "src": "/logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Écran d'accueil de l'application Génie Mentor Académie"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Interface pédagogique Génie Mentor Académie (GMA)"
+    }
+  ]
+}

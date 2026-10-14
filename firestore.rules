@@ -1,0 +1,182 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "massaw.seck@unchk.edu.sn" ||
+        request.auth.token.email == "massperpendiculaire@gmail.com" ||
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true
+      );
+    }
+
+    // 1. Users & Profiles Collection
+    match /users/{userId} {
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && isOwner(userId) && isValidUser(incoming());
+      allow update: if isSignedIn() && (isOwner(userId) || isAdmin()) && isValidUser(incoming());
+      allow delete: if isSignedIn() && (isOwner(userId) || isAdmin());
+
+      function isValidUser(data) {
+        return data.keys().hasAll(['uid', 'displayName', 'email', 'level', 'createdAt']) &&
+               data.uid == request.auth.uid &&
+               data.uid is string && data.uid.size() <= 128 &&
+               data.displayName is string && data.displayName.size() <= 100 &&
+               data.email is string && data.email.size() <= 100 &&
+               data.level is string && data.level.size() <= 50 &&
+               data.createdAt is number;
+      }
+    }
+
+    match /profiles/{userId} {
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && isOwner(userId) && incoming().uid == request.auth.uid;
+      allow update: if isSignedIn() && (isOwner(userId) || isAdmin()) && incoming().uid == request.auth.uid;
+      allow delete: if isSignedIn() && (isOwner(userId) || isAdmin());
+    }
+
+    // 2. Courses Collection
+    match /courses/{courseId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+
+      function isValidCourse(data) {
+        return data.keys().hasAll(['id', 'title', 'subject', 'level', 'chapter', 'createdAt']) &&
+               data.id is string && data.id.size() <= 128 &&
+               data.title is string && data.title.size() <= 200 &&
+               data.subject is string && data.subject.size() <= 50 &&
+               data.level is string && data.level.size() <= 50 &&
+               data.createdAt is number;
+      }
+    }
+
+    // 3. Assets Collection
+    match /assets/{assetId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // 4. Quizzes Collection
+    match /quizzes/{quizId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+
+    // 5. Transactions Top-Level and Receipts Subcollection
+    match /transactions/{txId} {
+      allow read, write, delete: if isSignedIn();
+    }
+
+    match /users/{userId}/receipts/{receiptId} {
+      allow get: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin() || isOwner(userId);
+      allow create: if isSignedIn() && isOwner(userId) && isValidTransaction(incoming());
+      allow update: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow delete: if isSignedIn() && (isOwner(userId) || isAdmin());
+
+      function isValidTransaction(data) {
+        return data.keys().hasAll(['id', 'userUid', 'userName', 'learnerName', 'type', 'paymentType', 'level', 'amount', 'operator', 'phoneNumber', 'status', 'createdAt']) &&
+               data.id is string && data.id.size() <= 128 &&
+               data.userUid is string && data.userUid.size() <= 128 &&
+               data.userName is string && data.userName.size() <= 100 &&
+               data.learnerName is string && data.learnerName.size() <= 100 &&
+               data.amount is number &&
+               data.status is string && data.status.size() <= 20;
+      }
+    }
+
+    // Allow collectionGroup query for receipts
+    match /{path=**}/receipts/{receiptId} {
+      allow read: if isAdmin();
+    }
+
+    // 6. Notifications Collection & Subcollection
+    match /notifications/{notifId} {
+      allow read: if isSignedIn() && (
+        resource.data.recipientId == request.auth.uid ||
+        resource.data.recipientId == null ||
+        resource.data.userUid == request.auth.uid ||
+        resource.data.userUid == 'all' ||
+        isAdmin()
+      );
+      allow create: if isSignedIn() && (isAdmin() || incoming().userUid == request.auth.uid);
+      allow update: if isSignedIn() && (
+        isAdmin() || 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readBy', 'status'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId}/notifications/{notificationId} {
+      allow get, list: if isSignedIn() && (isOwner(userId) || userId == 'all' || isAdmin());
+      allow create: if isAdmin() || isOwner(userId);
+      allow update: if isSignedIn() && (isOwner(userId) || userId == 'all' || isAdmin());
+      allow delete: if isSignedIn() && (isOwner(userId) || isAdmin());
+    }
+
+    // 7. Profile Pictures Collection
+    match /profile_pictures/{userId} {
+      allow read, write: if isSignedIn() && (isOwner(userId) || isAdmin());
+    }
+
+    // 7. System Config Collection (App Updates)
+    match /system/{configId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // 8. VIP Payment Requests Collection
+    match /payment_requests/{requestId} {
+      allow read, write, delete: if isSignedIn();
+    }
+
+    // 9. Caisse Office Collection
+    match /caisse/{caisseId} {
+      allow read, write, delete: if isSignedIn();
+    }
+
+    // 10. Homework & TD Submissions Collection
+    match /homework_submissions/{hwId} {
+      allow read, write, delete: if isSignedIn();
+    }
+
+    // 11. Class Change Requests Collection
+    match /class_change_requests/{reqId} {
+      allow read, write, delete: if isSignedIn();
+    }
+
+    // 12. Admin Logs Collection
+    match /admin_logs/{logId} {
+      allow read, write, delete: if isSignedIn();
+    }
+  }
+}

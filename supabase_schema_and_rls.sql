@@ -1,0 +1,5 @@
+-- ============================================================================
+-- SAVOIR+ SÉNÉGAL • SCHÉMA COMPLET SUPABASE POSTGRESQL (PRODUCTION v2.5.2)
+-- Miroir synchronisé de supabase_complete_schema.sql
+-- ============================================================================
+-- Voir le fichier complet supabase_complete_schema.sql

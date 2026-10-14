@@ -1,0 +1,202 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+@import "mathlive/static.css";
+@import "mathlive/fonts.css";
+
+math-field {
+  display: block;
+  font-size: 1.15rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.85rem;
+  border: 1.5px solid #334155;
+  background-color: #0f172a;
+  color: #ffffff;
+  outline: none;
+  min-height: 2.85rem;
+  transition: all 0.15s ease-in-out;
+  cursor: text;
+}
+
+math-field:focus-within {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+}
+
+math-field::part(virtual-keyboard-toggle) {
+  color: #f59e0b;
+}
+
+html, body {
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f8fafc;
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.25);
+  border-radius: 9999px;
+}
+
+/* KaTeX error neutralizer: prevents ugly red boxes on visual buttons */
+.katex-error {
+  color: inherit !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* KaTeX formulas: responsive full-width rendering on mobile & desktop */
+.katex-display {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 0.6rem 0.8rem !important;
+  margin: 0.75rem 0 !important;
+  border-radius: 0.75rem !important;
+  background-color: rgba(15, 23, 42, 0.7) !important;
+  border: 1px solid rgba(51, 65, 85, 0.6) !important;
+  text-align: center !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.katex {
+  font-size: 1.08em !important;
+  max-width: 100% !important;
+  text-rendering: auto !important;
+}
+
+.katex-html {
+  max-width: 100% !important;
+}
+
+/* Fullscreen formula modal container */
+.fullscreen-formula-view .katex-display {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 1rem 0 !important;
+  font-size: 1.35em !important;
+}
+
+/* Force dark/black text inside Edit Quiz Modal inputs for optimal readability */
+.edit-quiz-modal-container input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.edit-quiz-modal-container textarea,
+.edit-quiz-modal-container select {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.4);
+}
+
+/* ========================================================================== */
+/* Animation Marquee Défilante Fluide pour Bandeaux (Pause au toucher / survol) */
+/* ========================================================================== */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee-scroll var(--marquee-duration, 18s) linear infinite;
+}
+
+.marquee-container:hover .animate-marquee,
+.marquee-container:active .animate-marquee,
+.marquee-container:focus .animate-marquee {
+  animation-play-state: paused !important;
+}
+
+/* ========================================================================== */
+/* UI/UX Animations: Page Transitions, Card Hover & Micro-interactions        */
+/* ========================================================================== */
+
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: page-enter 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes modal-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-scale {
+  animation: modal-scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Micro-interactions for buttons */
+.btn-interactive {
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.15s ease-in-out,
+              border-color 0.15s ease-in-out;
+}
+
+.btn-interactive:hover {
+  transform: translateY(-1px) scale(1.01);
+}
+
+.btn-interactive:active {
+  transform: scale(0.96);
+}
+
+/* Card hover animations */
+.card-interactive {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease-in-out;
+}
+
+.card-interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.08), 0 8px 16px -6px rgba(0, 0, 0, 0.04);
+}
+
+

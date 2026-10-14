@@ -1,0 +1,8 @@
+{
+  "name": "Génie Mentor Académie",
+  "description": "Plateforme éducative et de soutien scolaire avec synchronisation temps réel Supabase et stockage haute performance - Génie Mentor Académie (GMA).",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
